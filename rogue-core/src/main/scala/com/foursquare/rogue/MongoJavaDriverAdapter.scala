@@ -139,6 +139,7 @@ class MongoJavaDriverAdapter[MB](dbCollectionFactory: DBCollectionFactory[MB]) {
 
   def findAndModify[M <: MB, R](mod: FindAndModifyQuery[M, R],
                                 returnNew: Boolean,
+                                setOnInsertClause: ModifyClause,
                                 upsert: Boolean,
                                 remove: Boolean)
                                (f: DBObject => R): Option[R] = {
@@ -150,7 +151,7 @@ class MongoJavaDriverAdapter[MB](dbCollectionFactory: DBCollectionFactory[MB]) {
       val ord = query.order.map(buildOrder)
       val sel = query.select.map(buildSelect).getOrElse(BasicDBObjectBuilder.start.get)
       val m = buildModify(modClause.mod)
-      lazy val description = buildFindAndModifyString(mod.query.collectionName, modClause, returnNew, upsert, remove)
+      lazy val description = buildFindAndModifyString(mod.query.collectionName, modClause, returnNew, setOnInsertClause, upsert, remove)
 
       runCommand(description, modClause.query) {
         val coll = dbCollectionFactory.getPrimaryDBCollection(query)

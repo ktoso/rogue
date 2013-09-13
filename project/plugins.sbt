@@ -2,4 +2,6 @@ resolvers += Resolver.url("scalasbt", new URL("http://scalasbt.artifactoryonline
 
 addSbtPlugin("com.jsuereth" % "xsbt-gpg-plugin" % "0.6")
 
+addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.4.0")
+
 scalacOptions ++= Seq("-deprecation", "-unchecked")

@@ -135,7 +135,7 @@ object MongoHelpers extends Rogue {
       )
     }
 
-    def buildFindAndModifyString[R, M](collectionName: String, mod: FindAndModifyQuery[M, R], returnNew: Boolean, upsert: Boolean, remove: Boolean): String = {
+    def buildFindAndModifyString[R, M](collectionName: String, mod: FindAndModifyQuery[M, R], returnNew: Boolean, setOnInsert: Option[MongoModify], upsert: Boolean, remove: Boolean): String = {
       val query = mod.query
       val sb = new StringBuilder("db.%s.findAndModify({ query: %s".format(
           collectionName, buildCondition(query.condition)))
@@ -145,6 +145,7 @@ object MongoHelpers extends Rogue {
       sb.append(", new: " + returnNew)
       query.select.foreach(s => sb.append(", fields: " + buildSelect(s).toString))
       sb.append(", upsert: " + upsert)
+      if (setOnInsert.isDefined) sb.append(", setOnInsert: " + buildModify(setOnInsert.get.mod).toString)
       sb.append(" })")
       sb.toString
     }
